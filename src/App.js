@@ -7,7 +7,7 @@ function App() {
     <Fragment>
       <MainHeader />
       <main>
-        <Login />
+        <Login onLogin={loginHandler}/>
       </main>
     </Fragment>
   );

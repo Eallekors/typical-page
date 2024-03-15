@@ -2,13 +2,26 @@ import './Login.css'
 
 import Card from '../UI/Card'
 import Button from '../UI/Button'
-import { useState, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 
-const Login = () => {
+const Login = (props) => {
     const [enteredEmail, setEnteredEmail] = useState('')
     const [enteredPassword, setEnteredPassword] = useState('')
-    const [emailIsValid, setEmailIsValid] = useState('')
-    const [passwordIsValid, setPasswordIsValid] = useState('')
+    const [emailIsValid, setEmailIsValid] = useState()
+    const [passwordIsValid, setPasswordIsValid] = useState()
+    const [formIsValid,setFormIsValid] = useState(false)
+
+    useEffect(() => {
+        const timeOut = setTimeout(() => {
+            console.log('check form is valid')
+            setFormIsValid(emailIsValid && passwordIsValid)
+            console.log('checked')
+
+        }, 500)
+        return () => {
+            clearTimeout(timeOut)
+        }
+    }, [emailIsValid, passwordIsValid])
 
     const emailChangeHandler = (event) => {
         setEnteredEmail(event.target.value)
@@ -26,12 +39,16 @@ const Login = () => {
         setPasswordIsValid(enteredPassword.trim().length > 6)
     }
 
+    const submitHandler = (event) => {
+        event.preverntDefault()
+        props.onLogin(enteredEmail, enteredPassword)
+    }
 
     return (
         <Card className='login'>
-            <form>
+            <form onSubmit={submitHandler}>
                 <div className={`control ${emailIsValid === false ? 
-'invalid' : ''}`}>
+                    'invalid' : ''}`}>
                     <label for='email'>Email</label>
                     <input 
                         type='email'
@@ -42,7 +59,7 @@ const Login = () => {
                     ></input>
                 </div>
                 <div className={`control ${passwordIsValid === false ? 
-'invalid' : ''}`}>
+                    'invalid' : ''}`}>
                     <label for='password'>Password</label>
                     <input
                         type='password'
@@ -53,7 +70,10 @@ const Login = () => {
                     ></input>
                 </div>
                 <div className='actions'>
-                    <Button type='submit'>
+                    <Button 
+                        type='submit'
+                        disabled={!formIsValid}
+                    >
                         Login
                     </Button>
                 </div>
