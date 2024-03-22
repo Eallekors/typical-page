@@ -40,7 +40,7 @@ const Login = (props) => {
     }
 
     const submitHandler = (event) => {
-        event.preverntDefault()
+        event.preventDefault()
         props.onLogin(enteredEmail, enteredPassword)
     }
 
